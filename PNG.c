@@ -141,13 +141,6 @@ PNG* png_read(char* fileName){
 		return NULL;
 	}
 
-	//jump into data start position
-	if( setjmp(png_jmpbuf(png_ptr)) ){
-		printf("RUNTIME ERROR > png.c : png_read() : Could not jump into start data position for file \"%s\".\n", fileName);
-		fclose(f);
-		return NULL;
-	}
-
 	//init reading
 	png_init_io(png_ptr, f);
 	png_set_sig_bytes(png_ptr, 8);
@@ -165,13 +158,6 @@ PNG* png_read(char* fileName){
 	image->width  = png_get_image_width (png_ptr, info_ptr);
 	image->height = png_get_image_height(png_ptr, info_ptr);
 	png_read_update_info(png_ptr, info_ptr);
-
-	//read image data
-	if( setjmp(png_jmpbuf(png_ptr)) ){
-		printf("RUNTIME ERROR > png.c : png_read() : Could not start reading data for file \"%s\".\n", fileName);
-		fclose(f);
-		return NULL;
-	}
 
 	//prepare temporary data on Y axis
 	unsigned char** tempData = malloc(sizeof(unsigned char*) * image->height);
