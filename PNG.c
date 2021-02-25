@@ -6,7 +6,7 @@
 
 
 
-//png utility
+//libpng utility
 #include <png.h>
 
 
@@ -109,7 +109,7 @@ PNG* png_read(char* fileName){
 
 	//file management
 	FILE* f = fopen(fileName, "rb");
-	if(!f){
+	if(f == NULL){
 		printf("RUNTIME ERROR > png.c : png_read() : Unable to open file \"%s\".\n", fileName);
 		return NULL;
 	}
@@ -210,18 +210,96 @@ PNG* png_read(char* fileName){
 	return image;
 }
 
-void png_write(PNG* image, char* fileName){
+char png_write(PNG* image, char* fileName){
+
 	//error cases
 	if(fileName == NULL){
 		printf("RUNTIME ERROR > png.c : png_write() : FileName is NULL.\n");
-		return;
+		return 0;
 	}
 	if(image == NULL){
 		printf("RUNTIME ERROR > png.c : png_write() : PNG instance is NULL.\n");
-		return;
+		return 0;
 	}
 
-	//not defined yet
-	printf("RUNTIME ERROR > png.c : png_write() : Function is not defined yet.\n");
+	//file management
+	FILE* f = fopen(fileName, "wb");
+	if(f == NULL){
+		printf("RUNTIME ERROR > png.c : png_write() : Could not create file \"%s\".\n", fileName);
+		return 0;
+	}
+
+	//init image structure
+	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	if(!png_ptr){
+		printf("RUNTIME ERROR > png.c : png_write() : Could not get image structure for file \"%s\".\n", fileName);
+		fclose(f);
+		return 0;
+	}
+
+	//init image info
+	png_infop info_ptr = png_create_info_struct(png_ptr);
+	if(!info_ptr){
+		printf("RUNTIME ERROR > png.c : png_write() : Could not get image info for file \"%s\".\n", fileName);
+		fclose(f);
+		return 0;
+	}
+
+	//init writing
+	png_init_io(png_ptr, f);
+	png_set_IHDR(
+		png_ptr,
+		info_ptr,
+		image->width, image->height,
+		8,
+		PNG_COLOR_TYPE_RGB_ALPHA,
+		PNG_INTERLACE_NONE,
+		PNG_COMPRESSION_TYPE_BASE,
+		PNG_FILTER_TYPE_BASE
+	);
+
+	//prepare temporary data on Y axis
+	unsigned char** tempData = malloc(image->height * sizeof(unsigned char*));
+	if(tempData == NULL){
+		printf("FATAL ERROR > png.c : png_write() : Computer refuses to give more memory.\n");
+		fclose(f);
+		exit(EXIT_FAILURE);
+	}
+
+	//prepare temporary data on X axis
+	for(int y=0; y < image->height; y++){
+		tempData[y] = malloc(4 * image->width);
+		if(tempData[y] == NULL){
+			printf("FATAL ERROR > png.c : png_write() : Computer refuses to give more memory.\n");
+			fclose(f);
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	//transfer data from definitive to temporary
+	size_t index = 0;
+	for(int y=image->height-1; y >= 0; y--){
+		for(int x=0; x < 4*image->width; x += 4){
+			tempData[y][x  ] = (image->data[index] & 0xff000000) >> 24;
+			tempData[y][x+1] = (image->data[index] & 0x00ff0000) >> 16;
+			tempData[y][x+2] = (image->data[index] & 0x0000ff00) >> 8;
+			tempData[y][x+3] = (image->data[index] & 0x000000ff);
+			index++;
+		}
+	}
+
+	//write data
+	png_write_info(png_ptr, info_ptr);
+	png_write_image(png_ptr, tempData);
+	png_write_end(png_ptr, NULL);
+	fclose(f);
+
+	//free temporary data
+	for(int y=0; y < image->height; y++){
+		free(tempData[y]);
+	}
+	free(tempData);
+
+	return 1;
 }
 

@@ -58,7 +58,16 @@
 int main(){
 
 	//read image
+	printf("Getting extImage.png...\n");
 	PNG* extImage = png_read("extImage.png");
+
+	//write a copy
+	printf("Copying into \"copy.png\".\n");
+	if( png_write(extImage, "copy.png") ){
+		printf("Successfully created \"copy.png\" from \"extImage.png\".\n");
+	}else{
+		printf("Failed to create \"copy.png\" from \"extImage.png\".\n");
+	}
 
 	//free image
 	free(extImage->data);

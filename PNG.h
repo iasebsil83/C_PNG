@@ -25,7 +25,7 @@
 //structure
 typedef struct{
 	int width, height;
-	int* data;	
+	int* data;
 } PNG;
 
 
@@ -51,7 +51,7 @@ typedef struct{
 
 //read - write
 PNG* png_read(char* fileName);
-void png_write(PNG* image, char* fileName);
+char png_write(PNG* image, char* fileName);
 
 
 
