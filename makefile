@@ -6,11 +6,11 @@ run: prog.o PNG.o
 
 
 #program
-prog.o: prog.c PNG.h
-	gcc -Wall -c prog.c -O2
+prog.o: src/prog.c lib/PNG.h
+	gcc -Wall -c src/prog.c -O2
 
 
 
 #PNG library
-PNG.o: PNG.c PNG.h
-	gcc -Wall -c PNG.c -O2
+PNG.o: lib/PNG.c lib/PNG.h
+	gcc -Wall -c lib/PNG.c -O2

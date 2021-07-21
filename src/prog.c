@@ -7,7 +7,7 @@
 
 
 //graphics
-#include "PNG.h"
+#include "../lib/PNG.h"
 
 
 
@@ -58,15 +58,15 @@
 int main(){
 
 	//read image
-	printf("Getting extImage.png...\n");
-	PNG* extImage = png_read("extImage.png");
+	printf("Getting examples/extImage.png...\n");
+	PNG* extImage = png_read("examples/extImage.png");
 
 	//write a copy
-	printf("Copying into \"copy.png\".\n");
-	if( png_write(extImage, "copy.png") ){
-		printf("Successfully created \"copy.png\" from \"extImage.png\".\n");
+	printf("Copying into \"examples/copy.png\".\n");
+	if( png_write(extImage, "examples/copy.png") ){
+		printf("Successfully created \"examples/copy.png\" from \"examples/extImage.png\".\n");
 	}else{
-		printf("Failed to create \"copy.png\" from \"extImage.png\".\n");
+		printf("Failed to create \"examples/copy.png\" from \"examples/extImage.png\".\n");
 	}
 
 	//free image

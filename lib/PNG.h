@@ -1,17 +1,5 @@
 #ifndef ________PNG_H
-#define ________PNG
-
-
-
-
-
-
-
-
-
-
-
-
+#define ________PNG_H
 
 
 
@@ -35,35 +23,11 @@ typedef struct{
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 // ---------------- BASICS ----------------
 
 //read - write
 PNG* png_read(char* fileName);
 char png_write(PNG* image, char* fileName);
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
