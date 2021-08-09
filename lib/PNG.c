@@ -33,7 +33,7 @@
     You can now read or write into a PNG file in only one line.
 
         The only package required to run this library is libpng. It can be
-    easily installed on linux apt systems in typing :
+    easily installed on linux apt systems by typing :
                         sudo apt install libpng-dev
 
         This library is compatible with S2DE and S3DE, two graphic
